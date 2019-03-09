@@ -30,6 +30,7 @@ import org.synchronoss.cloud.nio.multipart.MultipartUtils.getHeaders
 
 
 // https://github.com/spring-cloud/spring-cloud-stream-samples/blob/master/processor-samples/reactive-processor/src/main/java/reactive/kafka/ReactiveProcessorApplication.java
+// https://docs.spring.io/spring-cloud-stream/docs/Elmhurst.RELEASE/reference/htmlsingle/#spring-cloud-stream-overview-reactive-programming-support
 
 @SpringBootApplication
 class DemoApplication
