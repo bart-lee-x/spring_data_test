@@ -8,13 +8,22 @@
 spring:
   cloud:
     stream:
-      bindings:
-        input:
-          destination: test
-          contentType: application/json
-        greetings-out:
-          destination: greetings
-          contentType: application/json
       kafka:
         binder:
           brokers: localhost:9092
+      bindings:
+        input: # channel name
+          destination: test # topic
+          contentType: application/json
+          group: myGroup # consumer groups
+          consumer:
+            startOffset: "latest"
+            concurrency: 3
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+server:
+  port: 8081

@@ -12,6 +12,7 @@ import org.springframework.cloud.stream.messaging.Sink
 import org.springframework.context.annotation.Bean
 import org.springframework.integration.annotation.InboundChannelAdapter
 import org.springframework.integration.annotation.Poller
+import org.springframework.integration.annotation.ServiceActivator
 import org.springframework.integration.core.MessageSource
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.SubscribableChannel
@@ -22,33 +23,65 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.springframework.kafka.support.Acknowledgment
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
+import org.springframework.messaging.converter.MessageConversionException
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Component
 import org.synchronoss.cloud.nio.multipart.MultipartUtils.getHeaders
 
 
-
-
 // https://github.com/spring-cloud/spring-cloud-stream-samples/blob/master/processor-samples/reactive-processor/src/main/java/reactive/kafka/ReactiveProcessorApplication.java
 
 @SpringBootApplication
-@EnableBinding(Sink::class)
 class DemoApplication
 
 data class Greetings(
-		val timestamp: Long,
-		val message: String
+        val message: String
 )
 
+//@EnableBinding(Processor::class)
 @Component
 class ConverseListener {
 
-	@StreamListener(Sink.INPUT)
-	fun handle(@Payload greetings: Greetings) {
-		println("RCV -> $greetings")
-	}
+    private val logger = LogFactory.getLog(javaClass)
+
+//    @StreamListener(Sink.INPUT)
+//    fun handle(@Payload s: String) {
+//
+//        logger.info("RCV -> $s")
+//
+//    }
+
+//    @StreamListener
+//    fun receive(@Input(Processor.INPUT) input: Flux<String>): Flux<String> {
+//        return input.map { s ->
+//            println(s)
+//            s.toUpperCase()
+//        }
+//    }
+//
+    @EnableBinding(Sink::class)
+    internal class TestSink {
+
+        private val logger = LogFactory.getLog(javaClass)
+
+        @StreamListener(Sink.INPUT)
+        fun receive(payload: String) {
+            logger.info("Data received: $payload")
+        }
+    }
+
+//    interface Sink {
+//        @Input("test-sink")
+//        fun sampleSink(): SubscribableChannel
+//    }
+
+
+//    @ServiceActivator(inputChannel = Sink.INPUT + ".myGroup.errors") //channel name 'input.myGroup.errors'
+//    fun error(message: Message<Any>) {
+//        println("Handling ERROR: $message")
+//    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<DemoApplication>(*args)
+    runApplication<DemoApplication>(*args)
 }
